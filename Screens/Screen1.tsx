@@ -42,8 +42,8 @@ const Screen1 = ({ navigation }: any) => {
       .get(
         `https://hn.algolia.com/api/v1/search_by_date?tags=story&page=${page}`
       )
-      .then((res) => {
-        setData(Array.from(new Set([...data, ...res.data.hits])));
+      .then((response) => {
+        setData(Array.from(new Set([...data, ...response.data.hits])));
       })
       .finally(() => {
         setLoading(false);
@@ -80,7 +80,7 @@ const Screen1 = ({ navigation }: any) => {
               </TouchableOpacity>
             );
           }}
-          onEndReachedThreshold={0.5}
+          onEndReachedThreshold={1}
           onEndReached={incrementPage}
           ListFooterComponent={() => {
             if (loading) {
