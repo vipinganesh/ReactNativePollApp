@@ -15,27 +15,25 @@ import axios from "axios";
 
 const Screen1 = ({ navigation }: any) => {
   const [data, setData] = useState<any[]>([]);
+  const [totalPage, setTotalPage] = useState<number>(0);
   const [page, setPage] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(false);
 
-  useEffect(() => {
-    !loading && getData();
-    const interval = setInterval(() => {
-      incrementPage();
-    }, 10000);
-
-    return () => {
-      clearInterval(interval);
-    };
-  }, []);
+  // useEffect(() => {
+  //   !loading && getData();
+  //   const interval = setInterval(() => {
+  //     incrementPage();
+  //   }, 1000 * 10);
+  // }, []);
 
   useEffect(() => {
     getData();
+  }, []);
+
+  useEffect(() => {
+    if (page < totalPage) setTimeout(getData, 10000);
   }, [page]);
 
-  function incrementPage() {
-    !loading && setPage(page + 1);
-  }
   function getData() {
     setLoading(true);
     axios
@@ -44,6 +42,8 @@ const Screen1 = ({ navigation }: any) => {
       )
       .then((response) => {
         setData(Array.from(new Set([...data, ...response.data.hits])));
+        setTotalPage(response.data.nbPages);
+        setPage(page + 1);
       })
       .finally(() => {
         setLoading(false);
@@ -80,8 +80,8 @@ const Screen1 = ({ navigation }: any) => {
               </TouchableOpacity>
             );
           }}
-          onEndReachedThreshold={1}
-          onEndReached={incrementPage}
+          // onEndReached={incrementPage}
+          // onEndReachedThreshold={0.4}
           ListFooterComponent={() => {
             if (loading) {
               return <ActivityIndicator />;
